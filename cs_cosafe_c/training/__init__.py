@@ -1,0 +1,1 @@
+"""CoSafe training modules."""

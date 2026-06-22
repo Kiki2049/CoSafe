@@ -1,0 +1,13 @@
+rotation:
+  - kind: tcp
+    config: simulation/leaderboard/team_code/agent_config/tcp_5_10_config.yaml
+    sensor_prefix: tcp
+  - kind: lmdrive
+    config: simulation/leaderboard/team_code/agent_config/lmdriver_config_8_10.py
+    sensor_prefix: lmd
+  - kind: uniad
+    config: simulation/assets/UniAD/base_e2e_b2d.py+ckpt/uniad/uniad_base_b2d.pth
+    sensor_prefix: uniad
+
+agent_name: lmdrive
+offset_strategy: route_hash

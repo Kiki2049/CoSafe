@@ -1,0 +1,207 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 680" font-family="'Courier New', monospace">
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#555"/>
+    </marker>
+    <marker id="arrow-blue" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#4A9EDA"/>
+    </marker>
+    <marker id="arrow-purple" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+      <polygon points="0 0, 8 3, 0 6" fill="#9467bd"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="900" height="680" fill="#fafbfc" rx="8"/>
+
+  <!-- Title -->
+  <text x="450" y="32" text-anchor="middle" font-size="18" font-weight="bold" fill="#333">CsWoTENet Architecture</text>
+  <text x="450" y="50" text-anchor="middle" font-size="11" fill="#888">CoSafe WoTE Trajectory Offset Prediction</text>
+
+  <!-- ============================================ -->
+  <!-- ROW 1: INPUTS (y=70) -->
+  <!-- ============================================ -->
+
+  <!-- BEV Feature -->
+  <rect x="30" y="70" width="200" height="50" fill="#e8f4fd" stroke="#4A9EDA" stroke-width="2" rx="3"/>
+  <text x="130" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#2c5f8a">BEV Feature</text>
+  <text x="130" y="108" text-anchor="middle" font-size="10" fill="#4A9EDA">(B, 64, 128, 128)</text>
+
+  <!-- Ego Status -->
+  <rect x="350" y="70" width="200" height="50" fill="#e8fde8" stroke="#74AA63" stroke-width="2" rx="3"/>
+  <text x="450" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#3d6e2e">Ego Status</text>
+  <text x="450" y="108" text-anchor="middle" font-size="10" fill="#74AA63">(B, 8) cmd+vel+acc</text>
+
+  <!-- Trajectory Anchors -->
+  <rect x="670" y="70" width="200" height="50" fill="#fdf2e8" stroke="#E38C47" stroke-width="2" rx="3"/>
+  <text x="770" y="92" text-anchor="middle" font-size="12" font-weight="bold" fill="#8a5a2c">Anchors</text>
+  <text x="770" y="108" text-anchor="middle" font-size="10" fill="#E38C47">(M, T, 3) frozen</text>
+
+  <!-- Arrows: inputs → encoders -->
+  <line x1="130" y1="120" x2="130" y2="148" stroke="#4A9EDA" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="450" y1="120" x2="450" y2="148" stroke="#74AA63" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="770" y1="120" x2="770" y2="148" stroke="#E38C47" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- ROW 2: ENCODERS (y=150) -->
+  <!-- ============================================ -->
+
+  <!-- BEV Encoder -->
+  <rect x="30" y="150" width="200" height="50" fill="#d0e8fa" stroke="#4A9EDA" stroke-width="2" rx="3"/>
+  <text x="130" y="172" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c5f8a">BEV Encoder</text>
+  <text x="130" y="188" text-anchor="middle" font-size="9" fill="#4A9EDA">4×Conv3+BN+ReLU+Drop2d</text>
+
+  <!-- Status Linear -->
+  <rect x="375" y="150" width="150" height="50" fill="#d0f0d0" stroke="#74AA63" stroke-width="2" rx="3"/>
+  <text x="450" y="172" text-anchor="middle" font-size="11" font-weight="bold" fill="#3d6e2e">Linear</text>
+  <text x="450" y="188" text-anchor="middle" font-size="9" fill="#74AA63">8 → 256</text>
+
+  <!-- Anchor MLP -->
+  <rect x="670" y="150" width="200" height="50" fill="#fae8d0" stroke="#E38C47" stroke-width="2" rx="3"/>
+  <text x="770" y="172" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a5a2c">Anchor MLP</text>
+  <text x="770" y="188" text-anchor="middle" font-size="9" fill="#E38C47">T×3 → 128 → 256</text>
+
+  <!-- Arrows: encoders → next -->
+  <line x1="130" y1="200" x2="130" y2="228" stroke="#4A9EDA" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <line x1="450" y1="200" x2="450" y2="295" stroke="#74AA63" stroke-width="2" stroke-dasharray="4,3" marker-end="url(#arrow)"/>
+  <line x1="770" y1="200" x2="770" y2="228" stroke="#E38C47" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- ROW 3: BEV Pool + TF Encoder (y=230) -->
+  <!-- ============================================ -->
+
+  <!-- BEV Pool + Downscale + PosEmbed -->
+  <rect x="30" y="230" width="200" height="60" fill="#b8d8f8" stroke="#4A9EDA" stroke-width="2" rx="3"/>
+  <text x="130" y="252" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c5f8a">Pool + 1×1 Conv</text>
+  <text x="130" y="266" text-anchor="middle" font-size="9" fill="#4A9EDA">+ Positional Embed</text>
+  <text x="130" y="280" text-anchor="middle" font-size="9" fill="#2c5f8a">→ (B, 64, 256)</text>
+
+  <!-- TF Encoder -->
+  <rect x="670" y="230" width="200" height="60" fill="#f5dfc0" stroke="#E38C47" stroke-width="2" rx="3"/>
+  <text x="770" y="252" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a5a2c">TF Encoder</text>
+  <text x="770" y="266" text-anchor="middle" font-size="9" fill="#E38C47">2 layers, 8 heads</text>
+  <text x="770" y="280" text-anchor="middle" font-size="9" fill="#8a5a2c">→ (B, M, 256)</text>
+
+  <!-- Label: "ego_feat" on the ego arrow -->
+  <text x="465" y="252" font-size="9" fill="#74AA63" font-style="italic">ego_feat</text>
+
+  <!-- Arrow: BEV pool → TF Decoder (curves left→center) -->
+  <line x1="130" y1="290" x2="130" y2="420" stroke="#4A9EDA" stroke-width="2"/>
+  <line x1="130" y1="420" x2="328" y2="420" stroke="#4A9EDA" stroke-width="2" marker-end="url(#arrow-blue)"/>
+  <!-- Label: key,value -->
+  <text x="230" y="414" font-size="9" fill="#4A9EDA" font-weight="bold">key, value</text>
+
+  <!-- Arrow: TF Encoder → Fusion MLP -->
+  <line x1="770" y1="290" x2="770" y2="310" stroke="#E38C47" stroke-width="2"/>
+  <line x1="770" y1="310" x2="620" y2="310" stroke="#E38C47" stroke-width="2" marker-end="url(#arrow)"/>
+
+  <!-- ============================================ -->
+  <!-- ROW 4: FUSION (y=300) -->
+  <!-- ============================================ -->
+
+  <!-- Cat + Fusion MLP -->
+  <rect x="330" y="298" width="280" height="55" fill="#f0e0f8" stroke="#9467bd" stroke-width="2" rx="3"/>
+  <text x="470" y="318" text-anchor="middle" font-size="11" font-weight="bold" fill="#6a3d8a">cat(ego, anchor) → MLP</text>
+  <text x="470" y="334" text-anchor="middle" font-size="9" fill="#9467bd">512 → ReLU → Drop → 256</text>
+  <text x="470" y="348" text-anchor="middle" font-size="9" fill="#6a3d8a">→ query (B, M, 256)</text>
+
+  <!-- Arrow: Fusion → TF Decoder -->
+  <line x1="470" y1="353" x2="470" y2="393" stroke="#9467bd" stroke-width="2" marker-end="url(#arrow-purple)"/>
+  <!-- Label: query -->
+  <text x="480" y="378" font-size="9" fill="#9467bd" font-weight="bold">query</text>
+
+  <!-- ============================================ -->
+  <!-- ROW 5: TRANSFORMER DECODER (y=395) -->
+  <!-- ============================================ -->
+
+  <rect x="330" y="395" width="280" height="55" fill="#e0d0f0" stroke="#9467bd" stroke-width="2" rx="3"/>
+  <text x="470" y="418" text-anchor="middle" font-size="12" font-weight="bold" fill="#6a3d8a">TF Decoder</text>
+  <text x="470" y="434" text-anchor="middle" font-size="9" fill="#9467bd">3 layers, 8 heads, d_ffn=1024</text>
+  <text x="470" y="446" text-anchor="middle" font-size="9" fill="#6a3d8a">Cross-Attention(Q, KV)</text>
+
+  <!-- Arrow: TF Decoder → split -->
+  <line x1="470" y1="450" x2="470" y2="480" stroke="#555" stroke-width="2"/>
+  <!-- Split into two branches -->
+  <line x1="470" y1="480" x2="330" y2="480" stroke="#DE7061" stroke-width="2"/>
+  <line x1="330" y1="480" x2="330" y2="498" stroke="#DE7061" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="470" y1="480" x2="610" y2="480" stroke="#699CDB" stroke-width="2"/>
+  <line x1="610" y1="480" x2="610" y2="498" stroke="#699CDB" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <!-- ============================================ -->
+  <!-- ROW 6: OUTPUT HEADS (y=500) -->
+  <!-- ============================================ -->
+
+  <!-- Offset Head -->
+  <rect x="220" y="500" width="220" height="55" fill="#fde0e0" stroke="#DE7061" stroke-width="2" rx="3"/>
+  <text x="330" y="522" text-anchor="middle" font-size="11" font-weight="bold" fill="#8a3030">Offset Head</text>
+  <text x="330" y="538" text-anchor="middle" font-size="9" fill="#DE7061">256→1024→ReLU→Drop→T×3</text>
+  <text x="330" y="550" text-anchor="middle" font-size="9" fill="#8a3030">tanh(yaw) × π</text>
+
+  <!-- Score Head -->
+  <rect x="500" y="500" width="220" height="55" fill="#e0e8fd" stroke="#699CDB" stroke-width="2" rx="3"/>
+  <text x="610" y="522" text-anchor="middle" font-size="11" font-weight="bold" fill="#2c508a">Score Head</text>
+  <text x="610" y="538" text-anchor="middle" font-size="9" fill="#699CDB">256→128→ReLU→Drop→1</text>
+  <text x="610" y="550" text-anchor="middle" font-size="9" fill="#2c508a">+ softmax over M</text>
+
+  <!-- Arrows: heads → outputs -->
+  <line x1="330" y1="555" x2="330" y2="588" stroke="#DE7061" stroke-width="2" marker-end="url(#arrow)"/>
+  <line x1="610" y1="555" x2="610" y2="588" stroke="#699CDB" stroke-width="2" marker-end="url(#arrow-blue)"/>
+
+  <!-- ============================================ -->
+  <!-- ROW 7: OUTPUTS (y=590) -->
+  <!-- ============================================ -->
+
+  <rect x="240" y="590" width="180" height="36" fill="#DE7061" stroke="#8a3030" stroke-width="2" rx="3"/>
+  <text x="330" y="613" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Offsets (B,M,T,3)</text>
+
+  <rect x="520" y="590" width="180" height="36" fill="#699CDB" stroke="#2c508a" stroke-width="2" rx="3"/>
+  <text x="610" y="613" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Scores (B,M)</text>
+
+  <!-- ============================================ -->
+  <!-- Bottom: + anchors → final trajectory -->
+  <!-- ============================================ -->
+
+  <!-- Merge arrow: offsets + anchors = candidates -->
+  <line x1="330" y1="626" x2="330" y2="650" stroke="#DE7061" stroke-width="2"/>
+  <line x1="610" y1="626" x2="610" y2="650" stroke="#699CDB" stroke-width="2"/>
+  <line x1="330" y1="650" x2="610" y2="650" stroke="#555" stroke-width="1.5" stroke-dasharray="5,3"/>
+  <text x="470" y="668" text-anchor="middle" font-size="10" fill="#555" font-style="italic">candidates = anchors + offsets, weighted by scores</text>
+
+  <!-- ============================================ -->
+  <!-- Pixel art decorations: small pixel grid motifs -->
+  <!-- ============================================ -->
+
+  <!-- BEV grid icon (top-left of BEV box) -->
+  <g transform="translate(38, 78)">
+    <rect width="5" height="5" fill="#4A9EDA"/><rect x="6" width="5" height="5" fill="#7bc0f5"/>
+    <rect y="6" width="5" height="5" fill="#7bc0f5"/><rect x="6" y="6" width="5" height="5" fill="#4A9EDA"/>
+    <rect x="12" width="5" height="5" fill="#4A9EDA"/><rect x="12" y="6" width="5" height="5" fill="#7bc0f5"/>
+  </g>
+
+  <!-- Ego car icon (top-left of ego box) -->
+  <g transform="translate(358, 80)">
+    <rect x="3" width="8" height="5" fill="#74AA63"/>
+    <rect width="14" y="5" height="5" fill="#74AA63"/>
+    <rect x="1" y="10" width="4" height="3" fill="#444"/>
+    <rect x="9" y="10" width="4" height="3" fill="#444"/>
+  </g>
+
+  <!-- Anchor trajectory icon (top-left of anchor box) -->
+  <g transform="translate(678, 80)">
+    <rect width="3" height="3" fill="#E38C47"/>
+    <rect x="4" y="3" width="3" height="3" fill="#E38C47"/>
+    <rect x="8" y="5" width="3" height="3" fill="#E38C47"/>
+    <rect x="12" y="6" width="3" height="3" fill="#E38C47"/>
+    <rect x="16" y="5" width="3" height="3" fill="#E38C47"/>
+  </g>
+
+  <!-- Pixel corner accents -->
+  <g opacity="0.3">
+    <rect x="5" y="5" width="7" height="7" fill="#4A9EDA"/>
+    <rect x="12" y="5" width="7" height="7" fill="#74AA63"/>
+    <rect x="5" y="12" width="7" height="7" fill="#E38C47"/>
+    <rect x="888" y="5" width="7" height="7" fill="#9467bd"/>
+    <rect x="881" y="5" width="7" height="7" fill="#DE7061"/>
+    <rect x="888" y="12" width="7" height="7" fill="#699CDB"/>
+  </g>
+</svg>

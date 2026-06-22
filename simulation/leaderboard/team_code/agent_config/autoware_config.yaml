@@ -1,0 +1,16 @@
+autoware:
+    server_host: 'http://localhost'        # prefix; each ego uses port server_port_base + ego_id
+    server_port_base: 8100                 # ego 0 -> 8100, ego 1 -> 8101, ...
+    step_timeout: 1.0                      # seconds; HTTP /step per-tick budget
+    reset_timeout: 5.0                     # seconds; /reset initial call
+    max_retries: 3
+    scene_actor_radius: 100.0              # m; filter actors sent to bridge
+    scene_actor_min_z: -10.0               # filter underground stage actors (Autoware convention)
+
+control:
+    target_point_distance: 120
+    max_throttle: 0.6                      # matches AutowareToCarlaControl limits
+    max_brake: 0.2
+
+simulation:
+    skip_frames: 4                         # non-realtime frame-skip (matches uniad_b2d_agent)
