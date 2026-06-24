@@ -47,10 +47,8 @@ planning:
 action_name: 'team_code.colmdriver_action'
 
 comm_server:
-    # comm_client: http://127.0.0.1:8888/v1
-    # vlm_client: http://127.0.0.1:1111/v1
-    comm_client: http://10.176.56.234:8888/v1
-    vlm_client: http://10.176.56.234:1111/v1
+    comm_client: http://127.0.0.1:8888/v1
+    vlm_client: http://127.0.0.1:1111/v1
     api_key: ''
     api_base: ''
                 

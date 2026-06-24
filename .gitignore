@@ -273,6 +273,7 @@ checkpoints/
 ckpt/
 ckpt
 simulation/assets/LMDrive
+docker/autoware/maps/
 
 # CoSafe release: force-include shipped artifacts
 !cs_cosafe_c/training/output/best.pth

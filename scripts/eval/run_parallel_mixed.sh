@@ -153,12 +153,6 @@ done
 echo ""
 if [ $FAILED -eq 0 ]; then
     echo "All $NUM_GROUPS groups completed successfully."
-    echo "Aggregate stats:"
-    if [ "$VARIANT" == "baseline" ]; then
-        echo "  python visualization/cs_mixed_assignment_stats.py results/results_driving_mixed"
-    else
-        echo "  python visualization/cs_mixed_assignment_stats.py results/results_driving_cosafe_mixed"
-    fi
 else
     echo "$FAILED/$NUM_GROUPS groups had errors. Check logs in $LOG_DIR/"
 fi

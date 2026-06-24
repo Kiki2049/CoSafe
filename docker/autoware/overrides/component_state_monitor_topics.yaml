@@ -1,0 +1,18 @@
+# Minimal topics.yaml for Autoware privileged mode.
+# Most topics are commented out because privileged mode uses ground-truth
+# data published by our bridge, not real sensor pipelines.
+# See TUM README: "Comment out most of it, since aw in privileged mode
+# will miss a lot of the intermediate topics."
+
+- module: map
+  mode: [online, logging_simulation, planning_simulation]
+  type: launch
+  args:
+    node_name_suffix: vector_map
+    topic: /map/vector_map
+    topic_type: autoware_map_msgs/msg/LaneletMapBin
+    best_effort: false
+    transient_local: true
+    warn_rate: 0.0
+    error_rate: 0.0
+    timeout: 0.0

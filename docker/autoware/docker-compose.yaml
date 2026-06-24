@@ -1,0 +1,130 @@
+# Multi-ego Autoware for CoLMDriver/CoSafe.
+#
+# Each ego = 2 containers sharing one ROS_DOMAIN_ID:
+#   bridge_i    : our custom image (Humble + autoware_*_msgs + autoware_bridge.py)
+#   autoware_i  : Autoware Universe (custom-built from official 1.7.1 + audi etron)
+#
+# Aligned with TUM autoware_carla_leaderboard verified stack:
+#   - Same base image (ros:humble-ros-base-jammy)
+#   - Same autoware_msgs repos + versions (ros2.repos)
+#   - Same Autoware Universe 1.7.1 + carla_audi_etron vehicle model
+#   - Same launch: planning_simulator.launch.xml with use_sim_time=true, localization_sim_mode=none
+#
+# Up to 8 egos: i = 0..7, ROS_DOMAIN_ID = 10+i, bridge port = 8100+i.
+
+x-bridge-common: &bridge_common
+    image: cosafe_autoware_bridge:latest
+    build:
+        context: ./bridge
+        dockerfile: Dockerfile
+        network: host
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+        - ../../simulation/leaderboard/team_code/autoware_bridge.py:/opt/bridge/autoware_bridge.py:ro
+        - ../../simulation/leaderboard/team_code/bridge_converter.py:/opt/bridge/bridge_converter.py:ro
+
+x-autoware-common: &autoware_common
+    image: autoware_universe:carla-priv
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+        - ./maps:/maps:ro
+        - ./overrides/component_state_monitor_topics.yaml:/autoware/install/autoware_launch/share/autoware_launch/config/system/component_state_monitor/topics.yaml:ro
+    environment:
+        - RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
+        - PYTHONUNBUFFERED=1
+    entrypoint: ["/bin/bash", "-lc"]
+    tty: true
+
+x-aw-cmd: &aw_cmd
+    - "source /autoware/install/setup.bash && ros2 launch autoware_launch planning_simulator.launch.xml vehicle_model:=carla_audi_etron_vehicle sensor_model:=carla_audi_etron_sensor_kit map_path:=$${AUTOWARE_MAP_PATH}"
+
+services:
+    bridge_0:
+        <<: *bridge_common
+        container_name: cosafe_bridge_0
+        environment: {ROS_DOMAIN_ID: "10", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8100"]
+    autoware_0:
+        <<: *autoware_common
+        container_name: cosafe_autoware_0
+        environment: {ROS_DOMAIN_ID: "10", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_1:
+        <<: *bridge_common
+        container_name: cosafe_bridge_1
+        environment: {ROS_DOMAIN_ID: "11", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8101"]
+    autoware_1:
+        <<: *autoware_common
+        container_name: cosafe_autoware_1
+        environment: {ROS_DOMAIN_ID: "11", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_2:
+        <<: *bridge_common
+        container_name: cosafe_bridge_2
+        environment: {ROS_DOMAIN_ID: "12", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8102"]
+    autoware_2:
+        <<: *autoware_common
+        container_name: cosafe_autoware_2
+        environment: {ROS_DOMAIN_ID: "12", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_3:
+        <<: *bridge_common
+        container_name: cosafe_bridge_3
+        environment: {ROS_DOMAIN_ID: "13", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8103"]
+    autoware_3:
+        <<: *autoware_common
+        container_name: cosafe_autoware_3
+        environment: {ROS_DOMAIN_ID: "13", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_4:
+        <<: *bridge_common
+        container_name: cosafe_bridge_4
+        environment: {ROS_DOMAIN_ID: "14", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8104"]
+    autoware_4:
+        <<: *autoware_common
+        container_name: cosafe_autoware_4
+        environment: {ROS_DOMAIN_ID: "14", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_5:
+        <<: *bridge_common
+        container_name: cosafe_bridge_5
+        environment: {ROS_DOMAIN_ID: "15", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8105"]
+    autoware_5:
+        <<: *autoware_common
+        container_name: cosafe_autoware_5
+        environment: {ROS_DOMAIN_ID: "15", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_6:
+        <<: *bridge_common
+        container_name: cosafe_bridge_6
+        environment: {ROS_DOMAIN_ID: "16", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8106"]
+    autoware_6:
+        <<: *autoware_common
+        container_name: cosafe_autoware_6
+        environment: {ROS_DOMAIN_ID: "16", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
+
+    bridge_7:
+        <<: *bridge_common
+        container_name: cosafe_bridge_7
+        environment: {ROS_DOMAIN_ID: "17", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp}
+        command: ["python3", "/opt/bridge/autoware_bridge.py", "--host", "0.0.0.0", "--port", "8107"]
+    autoware_7:
+        <<: *autoware_common
+        container_name: cosafe_autoware_7
+        environment: {ROS_DOMAIN_ID: "17", RMW_IMPLEMENTATION: rmw_cyclonedds_cpp, AUTOWARE_MAP_PATH: /maps/Town05}
+        command: *aw_cmd
