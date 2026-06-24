@@ -124,7 +124,7 @@ cd DeepAccident && python setup.py develop && cd ..
 ```
 This installs the standard `mmcv-full==1.3.16` / `mmdet` / `mmseg` / `mmdet3d`, which coexist with the `mmcv_b2d` from Step 7.
 
-Then download the BEVerse V2X checkpoint from [Google drive](https://drive.google.com/drive/folders/1rFrMTwpvaqnyEy91miSGMOBgR_G3PI45?usp=sharing) and place it as follows:
+Then download the BEVerse V2X checkpoint from [Google drive](https://drive.google.com/file/d/1B0zxVzp9QElb2T2HRbrnkmJ7fYylj-fb) and place it as follows:
 ```Shell
 |--CoSafe
     |--DeepAccident
@@ -135,10 +135,10 @@ Then download the BEVerse V2X checkpoint from [Google drive](https://drive.googl
 
 ## Evaluation
 
-Each ADS is evaluated in up to three configurations: the native ADS (baseline), with Argus (ego-centric safety assurance framework), and with CoSafe. The run_parallel* scripts launch CARLA and the eval workers automatically — by default CARLA on GPU 0 (ports 2000/2010/2020) and three eval workers on GPUs 1–3, splitting the 46 routes into three groups. Edit the group/GPU/port settings at the top of each script for your machine.
+Each ADS is evaluated in up to three configurations: the native ADS (baseline), with Argus (ego-centric safety assurance framework), and with CoSafe. The `run_parallel*` scripts launch CARLA and the eval workers automatically — by default CARLA on GPU 0 (ports 2000/2010/2020) and three eval workers on GPUs 1–3, splitting the 46 routes into three groups. Edit the group/GPU/port settings at the top of each script for your machine.
 
 ### Evaluation of TCP, UniAD, VAD, and CoDriving
-**Step 1:** Download checkpoints from [Google drive](https://drive.google.com/drive/folders/1rFrMTwpvaqnyEy91miSGMOBgR_G3PI45?usp=sharing). The downloaded checkpoints of these ADSs should follow this structure:
+**Step 1:** Download checkpoints from [Google drive](https://drive.google.com/file/d/1B0zxVzp9QElb2T2HRbrnkmJ7fYylj-fb). The downloaded checkpoints of these ADSs should follow this structure:
 
 ```Shell
 |--CoSafe
