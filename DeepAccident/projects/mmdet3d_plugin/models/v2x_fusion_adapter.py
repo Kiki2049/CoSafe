@@ -17,7 +17,7 @@ import torch.nn.functional as F
 import numpy as np
 from einops import rearrange
 
-from projects.mmdet3d_plugin.datasets.utils.geometry import pose_vec2mat
+from ..datasets.utils.geometry import pose_vec2mat
 
 
 def warp_affine_simple(src, M, dsize, mode='bilinear', padding_mode='zeros', 

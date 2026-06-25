@@ -443,7 +443,6 @@ class LMDriveAgent(autonomous_agent.AutonomousAgent):
 		use_notice = self.agent_use_notice
 
 		# --- Remote inference ---
-		_ads_t0 = time.perf_counter()
 		waypoints_np, end_prob, buffer_length = self.lmdrive_client.infer(
 			ego_id=ego_id,
 			rgb_front=tick_data["rgb_front"],
@@ -460,7 +459,6 @@ class LMDriveAgent(autonomous_agent.AutonomousAgent):
 			notice_text=self.curr_notice[ego_id],
 			notice_frame_id=self.curr_notice_frame_id[ego_id],
 		)
-		print("[ADS-Timing] lmdrive forward={:.1f}ms".format((time.perf_counter() - _ads_t0) * 1000), flush=True)
 
 		if waypoints_np is None:
 			# Fallback to previous control on timeout/error

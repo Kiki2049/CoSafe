@@ -708,8 +708,6 @@ class CsBeverseInference:
                 print("[CoSafe DBG] Buffer '{}': {}/{} valid frames".format(
                     ak, n_valid, len(buf.get('valid', []))))
 
-        import time as _time
-        _t_forward = _time.perf_counter()
         try:
             with torch.no_grad():
                 predictions = self._model.simple_test(
@@ -719,7 +717,6 @@ class CsBeverseInference:
                     img_is_valid=img_is_valid_list,
                     relative_pose_to_ego=[relative_poses],
                 )
-            _t_forward_done = _time.perf_counter()
         except Exception as e:
             print("[CoSafe] Inference error: {}".format(e))
             return self._last_predictions
@@ -787,16 +784,12 @@ class CsBeverseInference:
                               sig_ch1.min().item(), sig_ch1.max().item(),
                               (sig_ch1 > 0.4).sum().item()))
 
-                _t_mean_ext = _time.perf_counter()
                 instance_seg, matched_centers, seg_counts, inst_flows = \
                     predict_instance_segmentation_and_trajectories(
                         mean_pred,
                         compute_matched_centers=True,
                         make_consistent=True,
                     )
-                _t_mean_done = _time.perf_counter()
-
-                _t_k6_start = _time.perf_counter()
                 all_samples = []
                 preds_list = motion_preds if isinstance(motion_preds, list) else [motion_preds]
                 for k, pred_k in enumerate(preds_list):
@@ -821,11 +814,6 @@ class CsBeverseInference:
                             'segmentpixelscnt': {},
                             'instance_flows': {},
                         })
-                _t_k6_done = _time.perf_counter()
-                print("[CoSafe][P1-Timing] forward={:.1f}ms mean_extract={:.1f}ms k6_extract={:.1f}ms".format(
-                    (_t_forward_done - _t_forward) * 1000,
-                    (_t_mean_done - _t_mean_ext) * 1000,
-                    (_t_k6_done - _t_k6_start) * 1000))
 
                 self._last_predictions = {
                     'instance_seg': instance_seg,

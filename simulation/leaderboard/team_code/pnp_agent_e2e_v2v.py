@@ -484,8 +484,6 @@ class PnP_Agent(autonomous_agent.AutonomousAgent):
         ]
 
         control_all = []
-        import time as _time
-        _ads_t0 = _time.perf_counter()
         if self.config['planning']['core_method'] == 'MotionNet':
             control_all, self.next_action_step = self.infer.get_action_from_list_multi_vehicle(car_data_raw=ego_data,
                                                             rsu_data_raw=rsu_data,
@@ -496,7 +494,6 @@ class PnP_Agent(autonomous_agent.AutonomousAgent):
                                                             rsu_data_raw=rsu_data,
                                                             step=self.step,
                                                             timestamp=timestamp)
-        print("[ADS-Timing] codriving forward={:.1f}ms".format((_time.perf_counter() - _ads_t0) * 1000), flush=True)
 
         ### return the control signal in list format.
         return control_all

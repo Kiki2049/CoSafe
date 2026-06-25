@@ -274,7 +274,6 @@ class TCPAgent(autonomous_agent.AutonomousAgent):
 		target_point = torch.stack(tick_data['target_point'], dim=1).to('cuda', dtype=torch.float32)
 		state = torch.cat([speed, target_point, cmd_one_hot], 1)
 
-		_ads_t0 = time.perf_counter()
 		pred= self.net(rgb, state, target_point)
 
 		steer_ctrl, throttle_ctrl, brake_ctrl, metadata = self.net.process_action(pred, tick_data['next_command'], gt_velocity, target_point)
@@ -344,7 +343,6 @@ class TCPAgent(autonomous_agent.AutonomousAgent):
 		self.prev_control[ego_id] = control
 		end_time = time.time()
 		print(self.step, end_time-start_time)
-		print("[ADS-Timing] tcp forward={:.1f}ms".format((time.perf_counter() - _ads_t0) * 1000), flush=True)
 		self.next_action_step[ego_id] = self.step + (end_time - start_time) * 2
 
 		# with open('/DB/rhome/weibomao/GPFS/CoP3_v10/infer_tcp.txt', 'a') as f:

@@ -477,10 +477,7 @@ class VadAgent(autonomous_agent.AutonomousAgent):
                 if torch.is_tensor(data[0]):
                     data[0] = data[0].to(self.device)
 
-        inference_start_time = time.time()
         output_data_batch = self.model(input_data_batch, return_loss=False, rescale=True)
-        inference_end_time = time.time()
-        print("[ADS-Timing] vad forward={:.1f}ms".format((inference_end_time - inference_start_time) * 1000), flush=True)
 
         t_pid_start = time.time()
         all_out_truck_d1 = output_data_batch[0]['pts_bbox']['ego_fut_preds'].cpu().numpy()

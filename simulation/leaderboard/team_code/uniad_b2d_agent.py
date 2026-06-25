@@ -420,10 +420,7 @@ class UniadAgent(autonomous_agent.AutonomousAgent):
 			if key != 'img_metas':
 				if torch.is_tensor(data[0]):
 					data[0] = data[0].to(self.device)
-		inference_start = time.time()
 		output_data_batch = self.model(input_data_batch, return_loss=False, rescale=True)
-		inference_end = time.time()
-		print("[ADS-Timing] uniad forward={:.1f}ms".format((inference_end - inference_start) * 1000), flush=True)
 		out_truck =  output_data_batch[0]['planning']['result_planning']['sdc_traj'][0].cpu().numpy()
 		steer_traj, throttle_traj, brake_traj, metadata_traj = self.pidcontroller.control_pid(out_truck, tick_data['speed'], local_command_xy)
 		

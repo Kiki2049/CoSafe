@@ -271,15 +271,11 @@ class CoSafeRSU:
             List[carla.VehicleControl]: final actions (same as ads_actions in Phase 1)
         """
         self._step_count += 1
-        import time as _time
-        _t_step_start = _time.perf_counter()
-        _phase_times = {}
 
         if self._config.perception.enable and self._perception is not None:
             predictions = self._perception.run_inference(
                 sensor_data, self._ego_vehicles, self._rsu_location)
 
-        _t0 = _time.perf_counter()
         if self._config.perception.enable and self._perception is not None:
             if predictions is not None:
                 self._last_predictions = predictions
@@ -296,7 +292,6 @@ class CoSafeRSU:
                         instance_seg, matched_centers,
                         all_vehicles, self._rsu_location)
                     predictions['matching'] = matching
-        _phase_times['P1b_tracking'] = _time.perf_counter() - _t0
 
         if self._config.perception.enable and self._perception is not None:
             is_inference_tick = (
@@ -322,7 +317,6 @@ class CoSafeRSU:
                     rsu_only_motion_predictions=rsu_only_preds_raw,
                 )
 
-        _t0 = _time.perf_counter()
         if (self._config.risk.enable
                 and self._risk_oracle is not None
                 and self._step_count % self._config.perception.inference_interval == 0):
@@ -331,7 +325,6 @@ class CoSafeRSU:
             if perception_output is not None:
                 self._last_risk_assessment = self._risk_oracle.assess(
                     perception_output)
-        _phase_times['P2_risk'] = _time.perf_counter() - _t0
 
         if (self._config.risk.enable
                 and self._risk_oracle is not None
@@ -354,7 +347,6 @@ class CoSafeRSU:
                         step=self._step_count,
                     )
 
-        _t0 = _time.perf_counter()
         if (self._wote_generator is not None
                 and self._last_predictions is not None
                 and self._step_count % self._config.perception.inference_interval == 0):
@@ -389,9 +381,6 @@ class CoSafeRSU:
                 self._last_wote_results = wote_results
 
 
-        _phase_times['P3_wote'] = _time.perf_counter() - _t0
-
-        _t0 = _time.perf_counter()
         if (self._candidate_selector is not None
                 and self._last_wote_results
                 and self._step_count % self._config.perception.inference_interval == 0):
@@ -422,10 +411,6 @@ class CoSafeRSU:
                                 self._mpc_controller.update_reference(
                                     agent_id, ref_traj, carla_veh)
 
-        if self._candidate_selector is not None and hasattr(self._candidate_selector, '_last_core_time'):
-            _phase_times['P4_selection'] = self._candidate_selector._last_core_time
-        else:
-            _phase_times['P4_selection'] = _time.perf_counter() - _t0
 
         if (self._candidate_selector is not None
                 and self._step_count % self._config.perception.inference_interval == 0):
@@ -440,7 +425,6 @@ class CoSafeRSU:
                     vehicle_targets=self._vehicle_targets,
                 )
 
-        _t0 = _time.perf_counter()
         if self._mpc_controller is not None:
             flagged_ads = self.get_flagged_agents() & self._get_ego_vehicle_ids()
             stop_agents = (self._last_selection.stop_agents
@@ -472,15 +456,6 @@ class CoSafeRSU:
                         if ev is not None and ev.id == agent_id:
                             ads_actions[i] = mpc_control
                             break
-
-        _phase_times['P5_mpc'] = _time.perf_counter() - _t0
-
-        if self._step_count % self._config.perception.inference_interval == 0:
-            parts = " ".join("{}={:.1f}ms".format(k, v * 1000)
-                             for k, v in _phase_times.items())
-            _t_sum = sum(_phase_times.values())
-            print("[CoSafe][Timing] step={} sum={:.1f}ms {}".format(
-                self._step_count, _t_sum * 1000, parts))
 
         return ads_actions
 
